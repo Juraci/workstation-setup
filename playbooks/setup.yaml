@@ -1,0 +1,29 @@
+---
+
+ - name: Ensure that the baremetal is ready
+   hosts: baremetal-machine
+   user: "{{ user }}"
+   sudo: yes
+
+   tasks:
+
+     - name: ensures ansible repository is present
+       apt_repository: repo='ppa:ansible/ansible' state=present
+
+     - apt: update_cache=yes
+
+     - apt: upgrade=dist state=latest
+
+
+     - name: Install basic packages
+       apt: name={{ item }} state=latest
+       with_items:
+         - vim
+         - git
+         - openvpn
+         - tmux
+         - software-properties-common
+         - ansible
+
+     - name: make the user a sudoer without password
+       lineinfile: dest=/etc/sudoers state=present line='{{user}} ALL=(ALL) NOPASSWD:ALL' validate='visudo -cf %s'
