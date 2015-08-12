@@ -30,3 +30,11 @@
 
      - name: Vundle repository must be present
        git: repo=http://github.com/VundleVim/Vundle.vim.git dest=/home/{{user}}/.vim/bundle/Vundle.vim
+
+     - name: Copy file/.vimrc to /home/user directory
+       copy: src=../files/.vimrc dest=/home/{{ user }}/.vimrc owner={{ user }} group={{ user }}
+
+     - name: Vundle the vim plugins
+       shell: vim +PluginInstall +qall
+       register: vundle_command
+       failed_when: 'vundle_command.rc != 0'
