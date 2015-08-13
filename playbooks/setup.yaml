@@ -38,3 +38,18 @@
        shell: vim +PluginInstall +qall
        register: vundle_command
        failed_when: 'vundle_command.rc != 0'
+
+     - name: Ensures the java binary file is present
+       copy: src=../files/jre-6u45-linux-x64.bin dest=/home/{{ user }}/ owner={{ user }} group={{ user }}
+
+     - name: Make sure that the java binary is executable
+       command: bash -lc "chmod +x /home/{{user}}/jre-6u45-linux-x64.bin"
+       register: command_result
+       failed_when: "command_result.rc != 0"
+
+#     - name: Make sure that the java binary is extracted
+#       shell: "/home/{{user}}/jre-6u45-linux-x64.bin"
+#       register: command_result
+#       failed_when: "command_result.rc != 0"
+
+#     - debug: var=command_result
