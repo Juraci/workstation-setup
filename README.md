@@ -26,7 +26,7 @@ $ ssh-copy-id -i ~/.ssh/id_rsa.pub <target-machine>
 ## How to run it
 
 1. Replace the IP in the hosts file with the IP of the target machine for setup
-2. Run the following command replacing <remote-use>r with the user of the target host that you wish to use:
+2. Run the following command replacing \<remote-use\> with the user of the target host that you wish to use:
 ```
 $ ansible-playbook -i hosts playbooks/setup.yaml -e "user=<remote-user>" -K
 ```
