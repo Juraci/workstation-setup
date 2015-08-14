@@ -41,15 +41,23 @@
 
      - name: Ensures the java binary file is present
        copy: src=../files/jre-6u45-linux-x64.bin dest=/home/{{ user }}/ owner={{ user }} group={{ user }}
+       register: java_file
 
      - name: Make sure that the java binary is executable
        command: bash -lc "chmod +x /home/{{user}}/jre-6u45-linux-x64.bin"
        register: command_result
        failed_when: "command_result.rc != 0"
+       when: java_file|changed
 
-#     - name: Make sure that the java binary is extracted
-#       shell: "/home/{{user}}/jre-6u45-linux-x64.bin"
-#       register: command_result
-#       failed_when: "command_result.rc != 0"
+     - name: Make sure that the java binary is extracted
+       shell: "/home/{{user}}/jre-6u45-linux-x64.bin"
+       register: command_result
+       failed_when: "'Done.' not in command_result.stdout or command_result.rc != 0"
+       sudo: no
+       when: java_file|changed
 
-#     - debug: var=command_result
+     - name: Java home must be set
+       lineinfile: dest=/home/{{ user }}/.bashrc state=present line="export JAVA_HOME='/home/{{user}}/jre1.6.0_45'"
+
+     - name: The PATH must include the JAVA_HOME bin
+       lineinfile: dest=/home/{{ user }}/.bashrc state=present line="export PATH=$PATH:$JAVA_HOME/bin"
